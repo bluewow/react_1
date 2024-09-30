@@ -5,7 +5,7 @@ import { Update } from "./components/Update";
 import { useState } from "react";
 
 function App() {
-  let update = null;
+  let contextControl = null;
   const [mode, setMode] = useState("WELCOME");
   const [id, setId] = useState(null);
   const [nextId, setNextId] = useState(4);
@@ -15,7 +15,7 @@ function App() {
     { id: 3, title: "JavaScript3", body: "JavaScript is ..." },
   ]);
 
-  const createButton = () => {
+  const button = () => {
     return (
       <ul>
         <li>
@@ -29,7 +29,7 @@ function App() {
             Create
           </a>
         </li>
-        {update}
+        {contextControl}
       </ul>
     );
   };
@@ -56,18 +56,30 @@ function App() {
       case "WELCOME":
         return <Article title="Welcome" body="Hello, Web" />;
       case "READ":
-        update = (
-          <li>
-            <a
-              href={"/update/" + id}
-              onClick={(e) => {
-                e.preventDefault();
-                setMode("UPDATE");
-              }}
-            >
-              Update
-            </a>
-          </li>
+        contextControl = (
+          <>
+            <li>
+              <a
+                href={"/update/" + id}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMode("UPDATE");
+                }}
+              >
+                Update
+              </a>
+            </li>
+            <li>
+              <input
+                type="button"
+                value="Delete"
+                onClick={() => {
+                  setTopic(topics.filter((topic) => topic.id !== id));
+                  setMode("WELCOME");
+                }}
+              />
+            </li>
+          </>
         );
         topic = topics.find((t) => t.id === id);
         return topic ? <Article title={topic.title} body={topic.body} /> : null;
@@ -98,7 +110,7 @@ function App() {
         }}
       />
       {renderContent()}
-      {createButton()}
+      {button()}
     </div>
   );
 }
